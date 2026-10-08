@@ -93,7 +93,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
             Xin chào Thầy/Cô {khbd.info.teacherName || teacherIdentity.fullName}
           </h1>
           <p className="text-slate-300 text-sm leading-relaxed mb-6">
-            Không gian làm việc số tích hợp cho giáo viên Toán: kết nối liên thông từ Yêu cầu cần đạt $\rightarrow$ Kiến thức & Đồ thị $\rightarrow$ KHBD 5512 $\rightarrow$ Slide giảng dạy $\rightarrow$ Đề kiểm tra & Ma trận 7991.
+Không gian làm việc số tích hợp cho giáo viên Toán: kết nối liên thông từ Yêu cầu cần đạt → Kiến thức & Đồ thị → KHBD 5512 → Slide giảng dạy → Đề kiểm tra & Ma trận 7991.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 font-mono">
@@ -103,7 +103,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
             </div>
             <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
               <span className="text-blue-400 font-bold">Khối lớp:</span>
-              <span>{khbd.info.grade} ({khbd.info.assignedClasses?.join(', ') || '9A1'})</span>
+              <span>{khbd.info.grade}</span>
             </div>
             <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
               <span className="text-blue-400 font-bold">Năm học:</span>
