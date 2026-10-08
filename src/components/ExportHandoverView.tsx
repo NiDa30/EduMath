@@ -13,10 +13,11 @@ import {
   Presentation, 
   ShieldCheck, 
   AlertCircle,
-  GraduationCap
+  Calculator,
+  Award
 } from 'lucide-react';
 import { AppState, LessonPlan5512, Exam7991Data, SlideItem } from '../types';
-import { exportWordKHBD, exportWordExam7991, exportHtmlSlides, exportRubricDoc } from '../utils/exportUtils';
+import { exportWordKHBD, exportWordExam7991, exportHtmlSlides, exportScoringGuideDoc } from '../utils/exportUtils';
 
 interface ExportHandoverViewProps {
   appState: AppState;
@@ -42,7 +43,7 @@ export const ExportHandoverView: React.FC<ExportHandoverViewProps> = ({ appState
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `EduMaster_Literature_Handover_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `EduMaster_Math_Handover_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -61,252 +62,208 @@ export const ExportHandoverView: React.FC<ExportHandoverViewProps> = ({ appState
       setImportSuccess(true);
       setTimeout(() => setImportSuccess(false), 3000);
     } catch (err: any) {
-      setImportError(err.message || 'Cú pháp JSON không hợp lệ.');
+      setImportError(err.message || 'Mã JSON không hợp lệ.');
     }
   };
-
-  const checklistItems = [
-    {
-      id: 1,
-      title: 'Đầy đủ hệ sinh thái Ngữ văn THPT',
-      desc: 'Hệ thống tích hợp toàn diện: Đọc hiểu tác phẩm, Phân tích thể loại (Thơ/Truyện/Nghị luận), KHBD 5512, Slide Storytelling, Đề thi & Ma trận 7991, Rubric tự luận.',
-      status: true
-    },
-    {
-      id: 2,
-      title: 'Đề thi chuẩn Phần II Đúng/Sai 4 lệnh a-b-c-d',
-      desc: 'Mỗi câu Phần II gồm đúng 4 phát biểu kèm barem tính điểm chuẩn Công văn 7991/BGDĐT-GDTrH (0.1đ - 0.25đ - 0.50đ - 1.00đ).',
-      status: true
-    },
-    {
-      id: 3,
-      title: 'Tích hợp bộ công cụ Xuất file Văn phòng',
-      desc: 'Xuất Microsoft Word (.doc) KHBD 5512, Đề thi 7991, Rubric chấm bài, Slide trình chiếu (.html / .pptx) và In ấn chuẩn A4.',
-      status: true
-    },
-    {
-      id: 4,
-      title: 'Khối JSON State bàn giao phiên làm việc',
-      desc: 'Lưu trữ trạng thái toàn phần AppState, hỗ trợ sao chép, tải về và phục hồi phiên làm việc bất cứ lúc nào.',
-      status: true
-    }
-  ];
 
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-white p-5 rounded-2xl border border-stone-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-900 text-white flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              Bàn giao Phiên làm việc & Kiểm định chất lượng
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-900 border border-blue-200 flex items-center gap-1">
+              <Share2 className="w-3.5 h-3.5" />
+              Trung tâm Xuất bản & Bàn giao State
             </span>
-            <span className="text-xs text-stone-500 font-medium">Hệ thống Ngữ văn GDPT 2018</span>
+            <span className="text-xs text-slate-500 font-medium">Phiên bản 2.0-MATH</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold font-serif text-stone-900 mt-1">
-            Trung tâm Xuất bản & Khối JSON State Bàn giao
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900 mt-1 tracking-tight">
+            Xuất Bản Tài Liệu & Lưu Trữ Phiên Làm Việc
           </h1>
-          <p className="text-sm text-stone-600">
-            Xuất dữ liệu sang các định dạng văn phòng chuẩn mực hoặc lưu trữ State để các phiên làm việc sau tiếp nối.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Đóng gói hồ sơ giáo án, đề thi và sao lưu toàn bộ trạng thái hệ thống không phụ thuộc backend.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCopy}
-            className="px-3.5 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition"
-          >
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Đã chép State' : 'Sao chép JSON'}</span>
-          </button>
-          <button
-            onClick={handleDownloadJson}
-            className="px-3.5 py-2 bg-[#7C2D37] hover:bg-[#68232D] text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition"
-          >
-            <Download className="w-4 h-4" />
-            <span>Tải file .JSON</span>
-          </button>
+        <button
+          onClick={handleDownloadJson}
+          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm transition"
+        >
+          <Download className="w-4 h-4" />
+          <span>Tải file JSON dự phòng</span>
+        </button>
+      </div>
+
+      {/* Verification Checklist */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          Kiểm Tra Cấu Trúc Hồ Sơ Sư Phạm (Standards Verification)
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="text-xs font-medium text-slate-700">KHBD chuẩn 4 HĐ Công văn 5512</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="text-xs font-medium text-slate-700">Đề thi 4 phần chuẩn Công văn 7991</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="text-xs font-medium text-slate-700">Ma trận 2 chiều đồng bộ 10.0 đ</div>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="text-xs font-medium text-slate-700">JSON State Handover v2.0-MATH</div>
+          </div>
         </div>
       </div>
 
-      {/* 4-Item Verification Checklist Box */}
-      <div className="bg-white p-6 rounded-2xl border-2 border-emerald-200 shadow-xs">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-stone-200">
+      {/* Office Export Suite 4 Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
           <div>
-            <h3 className="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-              BẢNG KIỂM ĐỊNH TIÊU CHUẨN ĐỒNG BỘ (VERIFICATION CHECKLIST)
-            </h3>
-            <p className="text-xs text-stone-500 mt-0.5">
-              Đảm bảo 100% tiêu chí quy chuẩn kỹ thuật và nghiệp vụ sư phạm Ngữ văn
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center mb-3">
+              <FileText className="w-5 h-5" />
+            </div>
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Xuất Word KHBD 5512</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Tệp văn bản Microsoft Word (.doc) căn chỉnh chuẩn lề A4, bảng tiến trình 4 bước chuẩn Bộ GD&ĐT.
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono">
-            4 / 4 TIÊU CHUẨN
-          </span>
+          <button
+            onClick={() => exportWordKHBD(appState.khbd)}
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Tải KHBD (.doc)</span>
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {checklistItems.map((item) => (
-            <div key={item.id} className="p-4 rounded-xl bg-emerald-50/40 border border-emerald-100 flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                ✓
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-stone-900 leading-snug">{item.title}</h4>
-                <p className="text-xs text-stone-600 mt-1 leading-relaxed">{item.desc}</p>
-              </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center mb-3">
+              <Award className="w-5 h-5" />
             </div>
-          ))}
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Xuất Word Đề thi 7991</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Tệp đề kiểm tra định kỳ 4 phần có kèm trang Đáp án và Hướng dẫn chấm barem 10.0 điểm.
+            </p>
+          </div>
+          <button
+            onClick={() => exportWordExam7991(appState.exam, appState.khbd)}
+            className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Tải Đề thi (.doc)</span>
+          </button>
         </div>
-      </div>
 
-      {/* Export Office Suite */}
-      <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
-        <h3 className="font-serif font-bold text-base text-stone-900 mb-4 flex items-center gap-2">
-          <Download className="w-4 h-4 text-[#7C2D37]" />
-          Khu vực Xuất bản File Văn phòng (Office Export Suite)
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50 hover:bg-white hover:border-[#7C2D37] transition flex flex-col justify-between">
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-[#7C2D37]/10 text-[#7C2D37] flex items-center justify-center mb-3">
-                <FileText className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-sm text-stone-900 font-serif">Word KHBD (5512)</h4>
-              <p className="text-xs text-stone-500 mt-1">Định dạng .doc có khung biểu 4 hoạt động, chuẩn in A4.</p>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center mb-3">
+              <Presentation className="w-5 h-5" />
             </div>
-            <button
-              onClick={() => exportWordKHBD(appState.khbd)}
-              className="mt-4 w-full py-2 bg-[#7C2D37] hover:bg-[#68232D] text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Tải Word KHBD</span>
-            </button>
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Xuất Slide Trình Chiếu</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Tệp HTML độc lập tích hợp KaTeX, chạy offline trên mọi máy chiếu phòng học.
+            </p>
           </div>
+          <button
+            onClick={() => exportHtmlSlides(appState.slides, appState.khbd.info.lessonTitle)}
+            className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Tải Slide HTML</span>
+          </button>
+        </div>
 
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50 hover:bg-white hover:border-emerald-400 transition flex flex-col justify-between">
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3">
-                <CheckCircle2 className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-sm text-stone-900 font-serif">Word Đề thi (7991)</h4>
-              <p className="text-xs text-stone-500 mt-1">Đề thi 4 phần kèm barem hướng dẫn chấm 10.0 đ.</p>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center mb-3">
+              <Calculator className="w-5 h-5" />
             </div>
-            <button
-              onClick={() => exportWordExam7991(appState.exam, appState.khbd)}
-              className="mt-4 w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Tải Word Đề thi</span>
-            </button>
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Xuất Barem Tự Luận</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Bảng barem điểm theo từng bước giải toán phục vụ chấm thi và in phiếu chấm bài.
+            </p>
           </div>
-
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50 hover:bg-white hover:border-amber-400 transition flex flex-col justify-between">
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center mb-3">
-                <Presentation className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-sm text-stone-900 font-serif">Slide Storytelling</h4>
-              <p className="text-xs text-stone-500 mt-1">Trình chiếu tương tác, Quote Slide văn học chuẩn nghệ thuật.</p>
-            </div>
-            <button
-              onClick={() => exportHtmlSlides(appState.slides, appState.khbd.info.lessonTitle)}
-              className="mt-4 w-full py-2 bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Tải Slide Bài giảng</span>
-            </button>
-          </div>
-
-          <div className="p-4 rounded-xl border border-stone-200 bg-stone-50 hover:bg-white hover:border-purple-400 transition flex flex-col justify-between">
-            <div>
-              <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center mb-3">
-                <GraduationCap className="w-4 h-4" />
-              </div>
-              <h4 className="font-bold text-sm text-stone-900 font-serif">Word Rubric Chấm</h4>
-              <p className="text-xs text-stone-500 mt-1">Bảng Rubric chấm tự luận nghị luận chuẩn biểu điểm.</p>
-            </div>
-            <button
-              onClick={() => exportRubricDoc(appState.rubric)}
-              className="mt-4 w-full py-2 bg-purple-800 hover:bg-purple-900 text-white font-semibold text-xs rounded-lg flex items-center justify-center gap-1.5 transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Tải Rubric Word</span>
-            </button>
-          </div>
+          <button
+            onClick={() => exportScoringGuideDoc(appState.scoringGuide)}
+            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Tải Barem (.doc)</span>
+          </button>
         </div>
       </div>
 
-      {/* JSON State Handover Block */}
-      <div className="bg-[#171413] text-stone-100 p-6 rounded-2xl border border-stone-800 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-800">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#7C2D37]/30 text-rose-400 flex items-center justify-center">
-              <FileCode2 className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-serif font-bold text-base text-white">
-                KHỐI JSON STATE BÀN GIAO PHIÊN LÀM VIỆC (SESSION HANDOVER)
-              </h3>
-              <p className="text-xs text-stone-400">
-                Toàn bộ dữ liệu tác phẩm, chú thích, KHBD, slide và đề thi được bảo toàn trọn vẹn
-              </p>
-            </div>
+      {/* JSON State Handover Box */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <FileCode2 className="w-4 h-4 text-blue-600" />
+              Khối Dữ Liệu Bàn Giao JSON (AppState Handover Block)
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Sao chép mã JSON bên dưới để chia sẻ tiến độ với đồng nghiệp hoặc khôi phục phiên làm việc bất cứ lúc nào.
+            </p>
           </div>
+
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition border border-stone-700"
+              className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Đã sao chép!' : 'Sao chép toàn bộ JSON'}</span>
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copied ? 'Đã sao chép' : 'Sao chép 1 chạm'}</span>
             </button>
           </div>
         </div>
 
-        {/* Code container */}
-        <div className="relative">
-          <pre className="p-4 rounded-xl bg-[#0D0B0A] font-mono text-[11px] text-amber-300 overflow-x-auto max-h-96 border border-stone-800/80 leading-relaxed selection:bg-[#7C2D37] selection:text-white">
-            {jsonString}
-          </pre>
-        </div>
+        <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl text-[11px] font-mono overflow-x-auto max-h-60 border border-slate-800 leading-relaxed">
+          {jsonString}
+        </pre>
 
-        {/* Import JSON Restore Box */}
-        <div className="mt-6 pt-5 border-t border-stone-800">
-          <h4 className="text-xs font-bold text-stone-300 uppercase mb-2 flex items-center gap-1.5">
-            <Upload className="w-3.5 h-3.5 text-amber-400" />
-            Phục hồi phiên làm việc từ JSON trước:
+        {/* Restore Section */}
+        <div className="pt-4 border-t border-slate-100 space-y-3">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+            <Upload className="w-3.5 h-3.5 text-blue-600" />
+            Khôi phục Phiên làm việc (Restore Session)
           </h4>
           <textarea
             rows={3}
-            placeholder="Dán mã JSON State phiên trước vào đây để khôi phục..."
             value={importJsonText}
             onChange={(e) => setImportJsonText(e.target.value)}
-            className="w-full text-xs font-mono p-3 bg-stone-900 border border-stone-700 rounded-xl text-stone-200 focus:ring-2 focus:ring-[#7C2D37] mb-2"
+            placeholder="Dán mã JSON đã lưu trước đó vào đây..."
+            className="w-full text-xs font-mono p-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:border-blue-500"
           />
-          <div className="flex items-center justify-between">
-            <button
-              onClick={handleApplyImport}
-              disabled={!importJsonText.trim()}
-              className="px-4 py-2 bg-[#7C2D37] hover:bg-[#68232D] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Nạp lại trạng thái (Restore Session)</span>
-            </button>
-            {importSuccess && (
-              <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4" /> Nạp thành công phiên làm việc!
-              </span>
-            )}
-            {importError && (
-              <span className="text-xs font-semibold text-red-400 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" /> {importError}
-              </span>
-            )}
-          </div>
+
+          {importError && (
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{importError}</span>
+            </div>
+          )}
+
+          {importSuccess && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>Khôi phục phiên làm việc thành công!</span>
+            </div>
+          )}
+
+          <button
+            onClick={handleApplyImport}
+            disabled={!importJsonText.trim()}
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition"
+          >
+            <span>Áp dụng khôi phục phiên</span>
+          </button>
         </div>
       </div>
     </div>

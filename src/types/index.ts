@@ -1,10 +1,9 @@
 export type ActiveModule = 
   | 'dashboard'
   | 'workspace' 
-  | 'genre_analysis'
   | 'khbd' 
   | 'question_builder'
-  | 'rubric'
+  | 'solution_scoring'
   | 'slides' 
   | 'exam' 
   | 'matrix' 
@@ -12,111 +11,78 @@ export type ActiveModule =
 
 export interface AdministrativeInfo {
   department: string; // Sở GD&ĐT
-  school: string; // Trường THPT
-  subjectGroup: string; // Tổ chuyên môn
+  school: string; // Trường THCS / THPT
+  subjectGroup: string; // Tổ chuyên môn Toán
   teacherName: string; // Giáo viên thực hiện
-  subject: string; // Môn học (Ngữ văn)
-  grade: string; // Lớp (10, 11, 12)
-  textbook: string; // Bộ sách (Kết nối tri thức, Cánh Diều, Chân trời sáng tạo)
+  subject: string; // Môn học (Toán)
+  grade: string; // Lớp (9, 10, 11, 12...)
+  textbook: string; // Bộ sách (Kết nối tri thức với cuộc sống, Cánh Diều, Chân trời sáng tạo)
   lessonTitle: string; // Tên bài học
-  periods: string; // Thời lượng
+  chapter: string; // Chương / Chủ đề
+  periods: string; // Thời lượng (ví dụ: 2 tiết)
   academicYear: string; // Năm học
-  assignedClasses?: string[]; // Lớp phụ trách (12A1, 12A2...)
+  assignedClasses?: string[]; // Lớp phụ trách (9A1, 9A2...)
   semester?: string; // Học kỳ (Học kỳ I / II)
 }
 
-// ---------------- Thể loại & Tác phẩm Ngữ văn ----------------
-export type LiteratureGenre = 'poetry' | 'story' | 'argumentative' | 'essay';
+// ---------------- Khối Kiến thức Toán học & MathBlock ----------------
+export type MathBlockType = 
+  | 'concept' 
+  | 'definition' 
+  | 'theorem' 
+  | 'formula' 
+  | 'example' 
+  | 'step_solution' 
+  | 'exercise' 
+  | 'graph' 
+  | 'table' 
+  | 'note'
+  | 'activity';
 
-export interface TextAnnotation {
+export interface SolutionStep {
   id: string;
-  textSnippet: string;
-  startIndex?: number;
-  endIndex?: number;
-  type: 'highlight' | 'annotation' | 'device' | 'question' | 'keyword';
-  note: string;
-  color: 'amber' | 'emerald' | 'blue' | 'purple' | 'rose';
-  timestamp: string;
+  order: number;
+  label: string; // Ví dụ: "Bước 1: Rút ẩn y theo x từ phương trình thứ nhất"
+  explanation: string; // Lời giải thích sư phạm
+  formulaLatex?: string; // Công thức LaTeX
+  points?: number; // Điểm số quy định cho bước giải (phục vụ barem chấm)
 }
 
-export interface PoetryAnalysis {
-  theme: string; // Chủ đề
-  imagery: string[]; // Hình ảnh thơ
-  keywords: string[]; // Từ khóa
-  emotionalFlow: string; // Mạch cảm xúc
-  rhythmAndRhyme: string; // Nhịp, vần
-  tone: string; // Giọng điệu
-  rhetoricalDevices: string[]; // Biện pháp tu từ
-  keyVerses: string[]; // Câu thơ trọng tâm
-  contentValue: string; // Giá trị nội dung
-  artisticValue: string; // Giá trị nghệ thuật
-}
-
-export interface StoryCharacter {
-  name: string;
-  role: string;
-  traits: string[];
-  psychologicalShift: string;
-  quote: string;
-}
-
-export interface StoryAnalysis {
-  characters: StoryCharacter[];
-  events: string[];
-  storySituation: string; // Tình huống truyện
-  psychologicalShift: string; // Diễn biến tâm lí nhân vật
-  pointOfView: string; // Điểm nhìn trần thuật
-  narrator: string; // Người kể chuyện
-  artisticDetails: string[]; // Chi tiết nghệ thuật đắt giá
-  themes: string[]; // Chủ đề
-  message: string; // Thông điệp tư tưởng
-}
-
-export interface ArgumentNode {
+export interface MathBlock {
   id: string;
-  type: 'thesis' | 'claim' | 'reason' | 'evidence' | 'conclusion';
+  type: MathBlockType;
   title: string;
-  content: string;
-  quoteRef?: string;
+  content: string; // Nội dung giải thích
+  latex?: string; // Biểu thức / Hệ phương trình LaTeX
+  steps?: SolutionStep[]; // Lời giải từng bước
+  graphConfig?: {
+    title?: string;
+    functions: string[]; // Ví dụ: ["2*x - 3", "-0.5*x + 2"]
+    xMin: number;
+    xMax: number;
+    yMin: number;
+    yMax: number;
+    points?: { x: number; y: number; label: string }[];
+  };
+  tableData?: {
+    headers: string[];
+    rows: string[][];
+  };
+  phaseTag?: 'Khởi động' | 'Hình thành kiến thức' | 'Luyện tập' | 'Vận dụng';
 }
 
-export interface ArgumentMap {
-  thesis: string; // Luận đề
-  claims: {
-    id: string;
-    title: string;
-    reasons: {
-      id: string;
-      text: string;
-      evidences: {
-        id: string;
-        text: string;
-        quote: string;
-      }[];
-    }[];
-  }[];
-  conclusion: string; // Kết luận
-}
-
-export interface LiteratureLesson {
+export interface MathLesson {
   id: string;
   title: string;
-  author: string;
-  authorBio: string;
-  historicalContext: string;
-  genre: LiteratureGenre;
+  chapter: string;
   grade: string;
+  subject: string;
   textbook: string;
-  fullText: string;
-  textSections: {
-    id: string;
-    title: string;
-    content: string;
-  }[];
-  annotations: TextAnnotation[];
-  poetryAnalysis?: PoetryAnalysis;
-  storyAnalysis?: StoryAnalysis;
-  argumentMap?: ArgumentMap;
+  periods: number;
+  info: AdministrativeInfo;
+  learningOutcomes: string[]; // Yêu cầu cần đạt (YCCĐ)
+  prerequisites: string[]; // Kiến thức liên quan cần ôn tập
+  blocks: MathBlock[]; // Chuỗi khối kiến thức trung tâm
   progress: number;
   lastModified: string;
   khbdStatus: 'ready' | 'draft';
@@ -124,7 +90,7 @@ export interface LiteratureLesson {
   examStatus: 'ready' | 'draft';
 }
 
-// ---------------- Công văn 5512: Kế hoạch bài dạy ----------------
+// ---------------- Công văn 5512: Kế hoạch bài dạy môn Toán ----------------
 export interface LessonObjective {
   knowledge: string[];
   generalCompetencies: {
@@ -132,8 +98,14 @@ export interface LessonObjective {
     communication: string; // Giao tiếp & hợp tác
     problemSolving: string; // Giải quyết vấn đề & sáng tạo
   };
-  specializedCompetencies: string[]; // Năng lực đặc thù (Ngôn ngữ & Văn học)
-  qualities: string[]; // Phẩm chất (Yêu nước, Nhân ái, Chăm chỉ, Trung thực, Trách nhiệm)
+  specializedCompetencies: {
+    mathematicalThinking: string; // Năng lực tư duy và lập luận toán học
+    mathematicalModeling: string; // Năng lực mô hình hóa toán học
+    mathematicalProblemSolving: string; // Năng lực giải quyết vấn đề toán học
+    mathematicalCommunication: string; // Năng lực giao tiếp toán học
+    mathematicalTools: string; // Năng lực sử dụng công cụ, phương tiện học toán
+  };
+  qualities: string[]; // Phẩm chất (Chăm chỉ, Trung thực, Trách nhiệm...)
 }
 
 export interface TeachingEquipment {
@@ -158,6 +130,7 @@ export interface TeachingActivity {
   product: string;
   method?: string; // Phương pháp dạy học
   tools?: string; // Công cụ / học liệu
+  assessmentMethod?: string; // Phương thức đánh giá thường xuyên (hỏi - đáp, viết, thực hành...)
   steps: ActivitySteps;
 }
 
@@ -168,20 +141,26 @@ export interface LessonPlan5512 {
   activities: TeachingActivity[];
 }
 
-// ---------------- Slide bài giảng Storytelling ----------------
+// ---------------- Slide Bài giảng Toán học (Storytelling & Academic Flow) ----------------
 export interface SlideItem {
   id: string;
   title: string;
-  phaseTag: 'Khởi động' | 'Kiến thức mới' | 'Luyện tập' | 'Vận dụng' | 'Tổng kết';
-  layout: 'single' | 'split' | 'quiz' | 'cards' | 'quote' | 'visual_map';
+  phaseTag: 'Khởi động' | 'Hình thành kiến thức' | 'Luyện tập' | 'Vận dụng' | 'Tổng kết';
+  layout: 'cover' | 'single' | 'split' | 'quiz' | 'cards' | 'formula' | 'solution_steps' | 'graph';
   contentLeft: string;
   contentRight?: string;
+  latexFormula?: string;
+  problemIntro?: string;
+  steps?: SolutionStep[];
   bullets?: string[];
-  quoteText?: string;
-  quoteAuthor?: string;
-  discussionQuestion?: string;
-  visualMapType?: 'character' | 'emotional_flow' | 'argument' | 'timeline';
-  visualMapData?: any;
+  graphConfig?: {
+    functions: string[];
+    xMin: number;
+    xMax: number;
+    yMin: number;
+    yMax: number;
+    points?: { x: number; y: number; label: string }[];
+  };
   quizQuestion?: {
     question: string;
     options: string[];
@@ -192,49 +171,57 @@ export interface SlideItem {
   speakerNotes: string;
 }
 
-// ---------------- Question Builder & Rubric ----------------
-export type QuestionType = 'doc_hieu' | 'tieng_viet' | 'nl_xa_hoi' | 'nl_van_hoc';
-export type CognitiveLevel = 'NB' | 'TH' | 'VD';
-export type SkillType = 'Nhận diện' | 'Giải thích' | 'Phân tích' | 'So sánh' | 'Đánh giá' | 'Liên hệ' | 'Sáng tạo';
+// ---------------- Ngân hàng Câu hỏi Toán học (Question Bank) ----------------
+export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'essay';
+export type CognitiveLevel = 'NB' | 'TH' | 'VD'; // Nhận biết (Biết) - Thông hiểu (Hiểu) - Vận dụng
 
-export interface LiteratureQuestionItem {
+export interface MathQuestionItem {
   id: string;
   code: string;
   type: QuestionType;
   level: CognitiveLevel;
-  skill: SkillType;
-  passageSnippet: string; // Ngữ liệu trích dẫn
-  question: string; // Câu hỏi
-  answer: string; // Đáp án
-  guide: string; // Hướng dẫn chấm
-  points: number; // Điểm số
+  competency?: string; // Năng lực thành phần (Tư duy lập luận, Mô hình hóa...)
+  outcomeRef?: string; // Yêu cầu cần đạt map vào
+  content: string; // Đề bài (hỗ trợ LaTeX)
+  options?: {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+  };
+  correctOption?: 'A' | 'B' | 'C' | 'D';
+  statements?: [
+    { subId: 'a'; text: string; isCorrect: boolean; explanation?: string },
+    { subId: 'b'; text: string; isCorrect: boolean; explanation?: string },
+    { subId: 'c'; text: string; isCorrect: boolean; explanation?: string },
+    { subId: 'd'; text: string; isCorrect: boolean; explanation?: string }
+  ];
+  shortAnswerKey?: string;
+  essaySolutionSteps?: SolutionStep[];
+  points: number;
+  explanation?: string;
+  suggestedDuration?: number; // Thời gian làm bài ước tính (phút)
   linkedPart?: 'partI' | 'partII' | 'partIII' | 'partIV';
 }
 
-export interface RubricLevel {
-  label: string;
-  score: number;
-  descriptor: string;
-}
-
-export interface RubricCriterion {
+// ---------------- Barem Chấm Tự luận Bước giải (Solution Scoring Guide) ----------------
+export interface SolutionScoringCriterion {
   id: string;
-  name: string;
-  weight: number;
+  stepName: string;
+  contentRequired: string;
+  latexSnippet?: string;
   maxPoints: number;
-  description: string;
-  levels: RubricLevel[];
 }
 
-export interface RubricData {
+export interface SolutionScoringGuide {
   id: string;
   title: string;
-  essayType: 'nl_xa_hoi' | 'nl_van_hoc';
   totalPoints: number;
-  criteria: RubricCriterion[];
+  criteria: SolutionScoringCriterion[];
+  notes?: string;
 }
 
-// ---------------- Công văn 7991: Đề kiểm tra & Ma trận ----------------
+// ---------------- Công văn 7991: Đề kiểm tra & Khảo thí ----------------
 export interface PartIChoiceQuestion {
   id: string;
   code: string;
@@ -275,7 +262,7 @@ export interface PartIITrueFalseQuestion {
 export interface PartIIIShortAnswerQuestion {
   id: string;
   code: string;
-  level: 'TH' | 'VD';
+  level: 'NB' | 'TH' | 'VD';
   question: string;
   correctAnswer: string;
   points: number;
@@ -294,13 +281,22 @@ export interface PartIVEssayQuestion {
   points: number;
 }
 
+export interface ExamConfig {
+  numPartI: number; // Mặc định 12
+  numPartII: number; // Mặc định 2
+  numPartIII: number; // Mặc định 4
+  numPartIV: number; // Mặc định 1
+  scoringRulePartII: 'cv7991_standard' | 'equal_distribution';
+}
+
 export interface Exam7991Data {
   examHeader: {
     title: string;
     duration: string;
     examCode: string;
   };
-  passageRef?: string; // Ngữ liệu đề thi
+  config: ExamConfig;
+  contextSnippet?: string; // Dữ kiện bài toán chung nếu có
   partI: PartIChoiceQuestion[];
   partII: PartIITrueFalseQuestion[];
   partIII: PartIIIShortAnswerQuestion[];
@@ -308,22 +304,25 @@ export interface Exam7991Data {
 }
 
 export interface VerificationChecklist {
-  hasThreeSubsystems: boolean;
+  hasLessonObjectives: boolean;
+  hasActivities: boolean;
   hasPartIITrueFalseFourStatements: boolean;
-  hasExportWordPowerPoint: boolean;
+  hasMatrixSync: boolean;
+  hasExportOffice: boolean;
   hasJsonHandoverBlock: boolean;
 }
 
 export interface AppState {
+  schemaVersion: '2.0-MATH';
   version: string;
   lastUpdated: string;
   activeModule: ActiveModule;
   currentLessonId: string;
-  lessons: LiteratureLesson[];
+  lessons: MathLesson[];
   khbd: LessonPlan5512;
   slides: SlideItem[];
   exam: Exam7991Data;
-  questions: LiteratureQuestionItem[];
-  rubric: RubricData;
+  questions: MathQuestionItem[];
+  scoringGuide: SolutionScoringGuide;
   checklist: VerificationChecklist;
 }

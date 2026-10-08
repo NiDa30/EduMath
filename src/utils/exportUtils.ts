@@ -1,4 +1,4 @@
-import { LessonPlan5512, Exam7991Data, SlideItem, RubricData, LiteratureLesson } from '../types';
+import { LessonPlan5512, Exam7991Data, SlideItem, SolutionScoringGuide, MathLesson } from '../types';
 
 export function exportWordKHBD(khbd: LessonPlan5512) {
   const content = `
@@ -51,7 +51,7 @@ export function exportWordKHBD(khbd: LessonPlan5512) {
   p { margin: 4px 0; text-align: justify; }
   ul { margin: 4px 0 6px 20px; padding: 0; }
   li { margin-bottom: 3px; }
-  .step-title { font-weight: bold; color: #5B1E31; }
+  .step-title { font-weight: bold; color: #1E3A8A; }
 </style>
 </head>
 <body>
@@ -91,9 +91,11 @@ export function exportWordKHBD(khbd: LessonPlan5512) {
     <li><span class="bold">Giao tiếp & hợp tác:</span> ${khbd.objectives.generalCompetencies.communication}</li>
     <li><span class="bold">Giải quyết vấn đề & sáng tạo:</span> ${khbd.objectives.generalCompetencies.problemSolving}</li>
   </ul>
-  <p class="bold">b) Năng lực đặc thù môn Ngữ văn:</p>
+  <p class="bold">b) Năng lực đặc thù môn Toán:</p>
   <ul>
-    ${khbd.objectives.specializedCompetencies.map(s => `<li>${s}</li>`).join('')}
+    <li><span class="bold">Tư duy và lập luận toán học:</span> ${khbd.objectives.specializedCompetencies.mathematicalThinking}</li>
+    <li><span class="bold">Mô hình hóa toán học:</span> ${khbd.objectives.specializedCompetencies.mathematicalModeling}</li>
+    <li><span class="bold">Giải quyết vấn đề toán học:</span> ${khbd.objectives.specializedCompetencies.mathematicalProblemSolving}</li>
   </ul>
 
   <h3>3. Về phẩm chất</h3>
@@ -219,7 +221,6 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
   .options-grid { width: 100%; margin: 4px 0; }
   .options-grid td { border: none; padding: 2px 4px; }
   .note-box { font-size: 11pt; font-style: italic; color: #475569; margin-bottom: 8px; }
-  .passage-box { background-color: #FAF8F5; border-left: 3px solid #7C2D37; padding: 8px 12px; font-style: italic; margin-bottom: 14px; white-space: pre-line; }
 </style>
 </head>
 <body>
@@ -240,13 +241,6 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
 
   <hr style="border: none; border-top: 1px solid #000; margin: 8px 0;" />
   <p class="italic center" style="font-size: 11pt;">(Đề thi gồm 04 phần tuân thủ tuyệt đối quy định Công văn 7991/BGDĐT-GDTrH của Bộ GD&ĐT)</p>
-
-  ${exam.passageRef ? `
-    <div class="passage-box">
-      <strong>NGỮ LIỆU ĐỌC HIỂU:</strong><br/>
-      ${exam.passageRef}
-    </div>
-  ` : ''}
 
   <h2>PHẦN I. CÂU TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (3.0 ĐIỂM)</h2>
   <p class="note-box">Thí sinh trả lời từ câu 1 đến câu 12. Mỗi câu đúng được 0.25 điểm.</p>
@@ -296,12 +290,12 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
   ${exam.partIII.map((q, idx) => `
     <div class="question-box">
       <p><span class="bold">${q.code || `Câu ${idx + 1}`}:</span> ${q.question} <span class="italic">[${q.level} - 0.5 điểm]</span></p>
-      <p class="italic" style="margin-left: 20px;">Trả lời của thí sinh: ....................................................................</p>
+      <p class="italic" style="margin-left: 20px;">Đáp số của thí sinh: ....................................................................</p>
     </div>
   `).join('')}
 
-  <h2>PHẦN IV. TỰ LUẬN NGHỊ LUẬN (3.0 ĐIỂM)</h2>
-  <p class="note-box">Thí sinh trình bày bài viết nghị luận có kết cấu hoàn chỉnh, cảm thụ sâu sắc và liên hệ mở rộng.</p>
+  <h2>PHẦN IV. TỰ LUẬN BÀI TOÁN THỰC TẾ (3.0 ĐIỂM)</h2>
+  <p class="note-box">Thí sinh trình bày bài toán có đặt ẩn, lập hệ phương trình, giải và kết luận.</p>
   ${exam.partIV.map((q, idx) => `
     <div class="question-box">
       <p><span class="bold">${q.code || `Câu ${idx + 1}`}:</span> ${q.question} <span class="italic">[${q.level} - ${q.points} điểm]</span></p>
@@ -312,7 +306,7 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
 
   <br/><br/>
   <div style="page-break-before: always;">
-    <h1 style="color: #7C2D37;">HƯỚNG DẪN CHẤM CHI TIẾT (BAREM 10.0 ĐIỂM)</h1>
+    <h1 style="color: #1E3A8A;">HƯỚNG DẪN CHẤM CHI TIẾT (BAREM 10.0 ĐIỂM)</h1>
     
     <h3>ĐÁP ÁN PHẦN I (3.0 điểm)</h3>
     <table>
@@ -365,7 +359,7 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
     ${exam.partIV.map(q => `
       <table>
         <tr style="background: #F1F5F9;">
-          <th width="80%" class="bold">Tiêu chí và nội dung phân tích</th>
+          <th width="80%" class="bold">Các bước giải toán và tiêu chí đánh giá</th>
           <th width="20%" class="center bold">Điểm</th>
         </tr>
         ${q.rubric.map(r => `
@@ -376,7 +370,7 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
         `).join('')}
         <tr style="background: #E2E8F0;">
           <td class="bold">TỔNG ĐIỂM CÂU TỰ LUẬN</td>
-          <td class="center bold" style="color: #7C2D37;">${q.points}.0 đ</td>
+          <td class="center bold" style="color: #1E3A8A;">${q.points}.0 đ</td>
         </tr>
       </table>
     `).join('')}
@@ -384,7 +378,7 @@ export function exportWordExam7991(exam: Exam7991Data, khbd: LessonPlan5512) {
 </body>
 </html>
   `;
-  downloadBlob(content, `DE_THI_NGU_VAN_7991_${sanitizeFilename(exam.examHeader.title)}.doc`, 'application/msword');
+  downloadBlob(content, `DE_THI_TOAN_7991_${sanitizeFilename(exam.examHeader.title)}.doc`, 'application/msword');
 }
 
 export function exportHtmlSlides(slides: SlideItem[], title: string) {
@@ -394,107 +388,82 @@ export function exportHtmlSlides(slides: SlideItem[], title: string) {
   <meta charset="UTF-8">
   <title>Slide Bài Giảng: ${title}</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <style>
-    body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #1A1615; color: #FAF8F5; margin: 0; }
-    .font-serif { font-family: 'Lora', Georgia, serif; }
-    .slide-page { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 3.5rem; box-sizing: border-box; border-bottom: 4px solid #2D2422; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0F172A; color: #F8FAFC; margin: 0; }
+    .slide-page { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 3.5rem; box-sizing: border-box; border-bottom: 4px solid #1E293B; }
   </style>
 </head>
-<body class="bg-[#171413] text-stone-100">
-  <div class="fixed top-4 right-4 z-50 bg-stone-900/95 backdrop-blur px-4 py-2 rounded-xl text-sm border border-stone-800 shadow-xl flex gap-3 items-center">
-    <span class="text-amber-400 font-semibold font-serif">EduMaster Văn</span>
-    <button onclick="window.print()" class="bg-[#7C2D37] hover:bg-[#993A46] text-white px-3 py-1 rounded text-xs font-medium">In ấn / Xuất PDF</button>
+<body class="bg-slate-950 text-slate-100">
+  <div class="fixed top-4 right-4 z-50 bg-slate-900/95 backdrop-blur px-4 py-2 rounded-xl text-sm border border-slate-800 shadow-xl flex gap-3 items-center">
+    <span class="text-blue-400 font-semibold">EduMaster Math</span>
+    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium">In ấn / Xuất PDF</button>
   </div>
 
   ${slides.map((s, idx) => `
     <section class="slide-page">
       <div>
         <div class="flex items-center justify-between mb-4">
-          <span class="px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+          <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
             ${s.phaseTag}
           </span>
-          <span class="text-sm font-mono text-stone-400">Trang ${idx + 1} / ${slides.length}</span>
+          <span class="text-sm font-mono text-slate-400">Trang ${idx + 1} / ${slides.length}</span>
         </div>
-        <h1 class="text-3xl lg:text-4xl font-bold font-serif text-white tracking-tight mb-6">${s.title}</h1>
+        <h1 class="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-6">${s.title}</h1>
       </div>
 
       <div class="my-auto py-6">
-        ${s.layout === 'quote' && s.quoteText ? `
-          <div class="max-w-4xl mx-auto p-10 rounded-2xl bg-stone-900/80 border border-amber-900/40 text-center">
-            <p class="text-2xl md:text-3xl font-serif italic text-amber-100 leading-relaxed mb-6 whitespace-pre-line">
-              "${s.quoteText}"
-            </p>
-            <div class="text-sm uppercase tracking-widest text-amber-400 font-semibold mb-6">— ${s.quoteAuthor || ''}</div>
-            ${s.discussionQuestion ? `
-              <div class="p-4 rounded-xl bg-stone-800/80 border border-stone-700 text-sm text-stone-300">
-                <strong class="text-amber-300">Câu hỏi khám phá:</strong> ${s.discussionQuestion}
-              </div>
-            ` : ''}
+        ${s.problemIntro ? `
+          <div class="max-w-3xl mx-auto p-8 rounded-2xl bg-slate-900 border border-amber-500/30 text-amber-100 font-serif italic text-lg leading-relaxed mb-6 whitespace-pre-line text-center">
+            ${s.problemIntro}
           </div>
-        ` : s.layout === 'split' ? `
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-stone-900/70 p-7 rounded-2xl border border-stone-800">
-              <p class="text-base text-stone-200 leading-relaxed mb-4">${s.contentLeft}</p>
-              ${s.bullets ? `
-                <ul class="space-y-2 text-stone-300 text-sm">
-                  ${s.bullets.map(b => `<li class="flex items-start gap-2"><span class="text-amber-400 mt-1">✦</span> <span>${b}</span></li>`).join('')}
-                </ul>
-              ` : ''}
-            </div>
-            <div class="bg-stone-900/70 p-7 rounded-2xl border border-stone-800">
-              <p class="text-stone-200 whitespace-pre-line leading-relaxed text-sm md:text-base font-serif">${s.contentRight || ''}</p>
-            </div>
+        ` : ''}
+
+        ${s.latexFormula ? `
+          <div class="max-w-2xl mx-auto p-6 rounded-2xl bg-slate-900 border border-blue-500/30 text-blue-200 text-2xl text-center font-mono my-4">
+            $$${s.latexFormula}$$
           </div>
-        ` : s.layout === 'cards' && s.cards ? `
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            ${s.cards.map(c => `
-              <div class="bg-stone-900/80 p-6 rounded-2xl border border-stone-800 hover:border-amber-600/50 transition">
-                <h3 class="text-base font-bold font-serif text-amber-300 mb-2">${c.title}</h3>
-                <p class="text-sm text-stone-300 leading-relaxed">${c.desc}</p>
-              </div>
-            `).join('')}
+        ` : ''}
+
+        ${s.bullets ? `
+          <div class="bg-slate-900/70 p-8 rounded-2xl border border-slate-800 max-w-3xl mx-auto">
+            <ul class="space-y-3 text-base text-slate-300">
+              ${s.bullets.map(b => `<li class="flex items-start gap-3"><span class="text-blue-400 mt-1">✦</span> <span>${b}</span></li>`).join('')}
+            </ul>
           </div>
-        ` : s.layout === 'quiz' && s.quizQuestion ? `
-          <div class="bg-stone-900/90 p-8 rounded-2xl border border-stone-800 max-w-4xl mx-auto">
-            <div class="text-xl font-medium text-white mb-6 font-serif">${s.quizQuestion.question}</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${s.quizQuestion.options.map((opt, i) => `
-                <div class="p-4 rounded-xl border border-stone-800 bg-stone-950/70 text-stone-200 ${i === s.quizQuestion?.correctIndex ? 'border-emerald-500/60 bg-emerald-950/30 text-emerald-200' : ''}">
-                  ${opt}
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        ` : `
-          <div class="bg-stone-900/70 p-8 rounded-2xl border border-stone-800 max-w-4xl mx-auto">
-            <p class="text-xl text-stone-200 leading-relaxed mb-6 font-serif">${s.contentLeft}</p>
-            ${s.bullets ? `
-              <ul class="space-y-3 text-base text-stone-300">
-                ${s.bullets.map(b => `<li class="flex items-start gap-3"><span class="text-amber-400 mt-1">✦</span> <span>${b}</span></li>`).join('')}
-              </ul>
-            ` : ''}
-          </div>
-        `}
+        ` : ''}
       </div>
 
-      <div class="pt-4 border-t border-stone-800 flex justify-between items-center text-xs text-stone-400">
-        <div><span class="font-semibold text-stone-300">Ghi chú sư phạm:</span> ${s.speakerNotes}</div>
-        <div>EduMaster VN — Không gian Giảng dạy Ngữ văn THPT</div>
+      <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+        <div><span class="font-semibold text-slate-300">Ghi chú sư phạm:</span> ${s.speakerNotes}</div>
+        <div>EduMaster Math — Không gian Giảng dạy Toán THCS-THPT</div>
       </div>
     </section>
   `).join('')}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ]
+      });
+    });
+  </script>
 </body>
 </html>`;
-  downloadBlob(content, `SLIDE_NGU_VAN_${sanitizeFilename(title)}.html`, 'text/html');
+  downloadBlob(content, `SLIDE_TOAN_${sanitizeFilename(title)}.html`, 'text/html');
 }
 
-export function exportRubricDoc(rubric: RubricData) {
+export function exportScoringGuideDoc(guide: SolutionScoringGuide) {
   const content = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
 <meta charset='utf-8'>
-<title>${rubric.title}</title>
+<title>${guide.title}</title>
 <style>
   body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.3; }
   table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -504,30 +473,26 @@ export function exportRubricDoc(rubric: RubricData) {
 </style>
 </head>
 <body>
-  <h2 style="text-align: center; text-transform: uppercase;">${rubric.title}</h2>
-  <p style="text-align: center; font-style: italic;">Tổng điểm tối đa: ${rubric.totalPoints}.0 điểm</p>
+  <h2 style="text-align: center; text-transform: uppercase;">${guide.title}</h2>
+  <p style="text-align: center; font-style: italic;">Tổng điểm: ${guide.totalPoints}.0 điểm</p>
   <table>
     <tr>
-      <th width="20%">Tiêu chí đánh giá</th>
-      <th width="10%" class="center">Trọng số</th>
-      <th width="10%" class="center">Điểm tối đa</th>
-      <th width="60%">Mô tả chi tiết các mức đạt được</th>
+      <th width="25%">Bước giải</th>
+      <th width="55%">Yêu cầu cần đạt & nội dung</th>
+      <th width="20%" class="center">Điểm tối đa</th>
     </tr>
-    ${rubric.criteria.map(c => `
+    ${guide.criteria.map(c => `
       <tr>
-        <td><strong>${c.name}</strong><br/><span style="font-size: 10pt; color: #555;">${c.description}</span></td>
-        <td class="center">${c.weight}%</td>
+        <td><strong>${c.stepName}</strong></td>
+        <td>${c.contentRequired}</td>
         <td class="center"><strong>${c.maxPoints} đ</strong></td>
-        <td>
-          ${c.levels.map(l => `<p><strong>${l.label} (${l.score} đ):</strong> ${l.descriptor}</p>`).join('')}
-        </td>
       </tr>
     `).join('')}
   </table>
 </body>
 </html>
   `;
-  downloadBlob(content, `RUBRIC_${sanitizeFilename(rubric.title)}.doc`, 'application/msword');
+  downloadBlob(content, `BAREM_CHAM_${sanitizeFilename(guide.title)}.doc`, 'application/msword');
 }
 
 function sanitizeFilename(name: string): string {

@@ -1,39 +1,33 @@
+import { AppState } from '../types';
 import { 
-  AppState, 
-  LessonPlan5512, 
-  SlideItem, 
-  Exam7991Data 
-} from '../types';
-import { 
-  tayTienLesson, 
-  voNhatLesson, 
-  tuyenNgonDocLapLesson, 
-  literatureKhbd5512, 
-  literatureSlides, 
-  literatureExam7991, 
-  literatureQuestions, 
-  literatureRubric 
-} from './literaturePresets';
+  mathLesson9_1, 
+  mathKhbd5512, 
+  mathSlides, 
+  mathExam7991, 
+  mathQuestions, 
+  mathScoringGuide 
+} from './mathPresets';
 
 export const initialAppState: AppState = {
-  version: '3.0.0-LITERATURE-WORKSPACE',
+  schemaVersion: '2.0-MATH',
+  version: '2.0.0-MATH-WORKSPACE',
   lastUpdated: new Date().toISOString(),
   activeModule: 'dashboard',
-  currentLessonId: 'lesson-tay-tien',
+  currentLessonId: mathLesson9_1.id,
   lessons: [
-    tayTienLesson,
-    voNhatLesson,
-    tuyenNgonDocLapLesson
+    mathLesson9_1
   ],
-  khbd: literatureKhbd5512,
-  slides: literatureSlides,
-  exam: literatureExam7991,
-  questions: literatureQuestions,
-  rubric: literatureRubric,
+  khbd: mathKhbd5512,
+  slides: mathSlides,
+  exam: mathExam7991,
+  questions: mathQuestions,
+  scoringGuide: mathScoringGuide,
   checklist: {
-    hasThreeSubsystems: true,
+    hasLessonObjectives: true,
+    hasActivities: true,
     hasPartIITrueFalseFourStatements: true,
-    hasExportWordPowerPoint: true,
+    hasMatrixSync: true,
+    hasExportOffice: true,
     hasJsonHandoverBlock: true
   }
 };
