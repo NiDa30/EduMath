@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { ActiveModule, MathLesson, LessonPlan5512 } from '../types';
 
+import { teacherIdentity } from '../data/teacherIdentity';
+
 interface TeacherDashboardProps {
   lessons: MathLesson[];
   currentLessonId: string;
@@ -84,11 +86,11 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-medium mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>EduMaster Math · Mathematics Teaching Workspace</span>
+            <span>{teacherIdentity.productName} · {teacherIdentity.productSubtitle}</span>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
-            Xin chào Thầy/Cô {khbd.info.teacherName}
+            Xin chào Thầy/Cô {khbd.info.teacherName || teacherIdentity.fullName}
           </h1>
           <p className="text-slate-300 text-sm leading-relaxed mb-6">
             Không gian làm việc số tích hợp cho giáo viên Toán: kết nối liên thông từ Yêu cầu cần đạt $\rightarrow$ Kiến thức & Đồ thị $\rightarrow$ KHBD 5512 $\rightarrow$ Slide giảng dạy $\rightarrow$ Đề kiểm tra & Ma trận 7991.

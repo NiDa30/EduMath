@@ -38,7 +38,9 @@ import { SlidesView } from './components/SlidesView';
 import { Exam7991View } from './components/Exam7991View';
 import { MatrixView } from './components/MatrixView';
 import { ExportHandoverView } from './components/ExportHandoverView';
+import { TeacherFooter } from './components/TeacherFooter';
 import { exportWordKHBD, exportWordExam7991 } from './utils/exportUtils';
+import { teacherIdentity } from './data/teacherIdentity';
 
 export default function App() {
   const [appState, setAppState] = useState<AppState>(initialAppState);
@@ -189,7 +191,7 @@ export default function App() {
             <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
               <Calculator className="w-4 h-4" />
             </div>
-            <span className="font-bold text-sm tracking-tight text-slate-900">EduMaster Math</span>
+            <span className="font-bold text-sm tracking-tight text-slate-900">{teacherIdentity.productName}</span>
             <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-200">
               {currentLesson.grade}
             </span>
@@ -263,84 +265,91 @@ export default function App() {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:pl-72 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {appState.activeModule === 'dashboard' && (
-              <TeacherDashboard
-                lessons={appState.lessons}
-                currentLessonId={appState.currentLessonId}
-                onSelectLesson={handleSelectLesson}
-                setActiveModule={setActiveModule}
-                khbd={appState.khbd}
-              />
-            )}
+        <main className="flex-1 lg:pl-72 overflow-y-auto flex flex-col justify-between">
+          <div className="p-4 md:p-6 lg:p-8 flex-1">
+            <div className="max-w-7xl mx-auto space-y-6">
+              {appState.activeModule === 'dashboard' && (
+                <TeacherDashboard
+                  lessons={appState.lessons}
+                  currentLessonId={appState.currentLessonId}
+                  onSelectLesson={handleSelectLesson}
+                  setActiveModule={setActiveModule}
+                  khbd={appState.khbd}
+                />
+              )}
 
-            {appState.activeModule === 'workspace' && (
-              <MathWorkspace
-                lesson={currentLesson}
-                onUpdateLesson={handleUpdateCurrentLesson}
-                setActiveModule={setActiveModule}
-                onAddSlideFromBlock={handleAddSlideFromBlock}
-                onAddQuestionFromBlock={handleAddQuestionFromBlock}
-              />
-            )}
+              {appState.activeModule === 'workspace' && (
+                <MathWorkspace
+                  lesson={currentLesson}
+                  onUpdateLesson={handleUpdateCurrentLesson}
+                  setActiveModule={setActiveModule}
+                  onAddSlideFromBlock={handleAddSlideFromBlock}
+                  onAddQuestionFromBlock={handleAddQuestionFromBlock}
+                />
+              )}
 
-            {appState.activeModule === 'khbd' && (
-              <KhbdView
-                khbd={appState.khbd}
-                setKhbd={setKhbd}
-                setActiveModule={setActiveModule}
-                onAddSlideFromActivity={handleAddSlideFromActivity}
-              />
-            )}
+              {appState.activeModule === 'khbd' && (
+                <KhbdView
+                  khbd={appState.khbd}
+                  setKhbd={setKhbd}
+                  setActiveModule={setActiveModule}
+                  onAddSlideFromActivity={handleAddSlideFromActivity}
+                />
+              )}
 
-            {appState.activeModule === 'question_builder' && (
-              <QuestionBuilderView
-                questions={appState.questions}
-                setQuestions={setQuestions}
-                exam={appState.exam}
-                setExam={setExam}
-                setActiveModule={setActiveModule}
-              />
-            )}
+              {appState.activeModule === 'question_builder' && (
+                <QuestionBuilderView
+                  questions={appState.questions}
+                  setQuestions={setQuestions}
+                  exam={appState.exam}
+                  setExam={setExam}
+                  setActiveModule={setActiveModule}
+                />
+              )}
 
-            {appState.activeModule === 'solution_scoring' && (
-              <SolutionScoringBuilder
-                guide={appState.scoringGuide}
-                setGuide={setScoringGuide}
-              />
-            )}
+              {appState.activeModule === 'solution_scoring' && (
+                <SolutionScoringBuilder
+                  guide={appState.scoringGuide}
+                  setGuide={setScoringGuide}
+                />
+              )}
 
-            {appState.activeModule === 'slides' && (
-              <SlidesView
-                slides={appState.slides}
-                setSlides={setSlides}
-                lessonTitle={currentLesson.title}
-              />
-            )}
+              {appState.activeModule === 'slides' && (
+                <SlidesView
+                  slides={appState.slides}
+                  setSlides={setSlides}
+                  lessonTitle={currentLesson.title}
+                />
+              )}
 
-            {appState.activeModule === 'exam' && (
-              <Exam7991View
-                exam={appState.exam}
-                setExam={setExam}
-                khbd={appState.khbd}
-              />
-            )}
+              {appState.activeModule === 'exam' && (
+                <Exam7991View
+                  exam={appState.exam}
+                  setExam={setExam}
+                  khbd={appState.khbd}
+                />
+              )}
 
-            {appState.activeModule === 'matrix' && (
-              <MatrixView
-                exam={appState.exam}
-                khbd={appState.khbd}
-              />
-            )}
+              {appState.activeModule === 'matrix' && (
+                <MatrixView
+                  exam={appState.exam}
+                  khbd={appState.khbd}
+                />
+              )}
 
-            {appState.activeModule === 'export_handover' && (
-              <ExportHandoverView
-                appState={appState}
-                onRestoreState={(restored) => setAppState(restored)}
-              />
-            )}
+              {appState.activeModule === 'export_handover' && (
+                <ExportHandoverView
+                  appState={appState}
+                  onRestoreState={(restored) => setAppState(restored)}
+                />
+              )}
+            </div>
           </div>
+
+          {/* Full Teacher Identity Footer for Dashboard and Export Handover */}
+          {(appState.activeModule === 'dashboard' || appState.activeModule === 'export_handover') && (
+            <TeacherFooter />
+          )}
         </main>
       </div>
     </div>

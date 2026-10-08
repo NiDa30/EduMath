@@ -9,13 +9,15 @@ import {
   Share2, 
   FileText, 
   Compass, 
-  LayoutDashboard,
-  Sparkles,
-  BookOpen,
-  Award,
-  GraduationCap
+  LayoutDashboard, 
+  Sparkles, 
+  BookOpen, 
+  Award, 
+  GraduationCap, 
+  Mail 
 } from 'lucide-react';
 import { ActiveModule, MathLesson } from '../types';
+import { teacherIdentity } from '../data/teacherIdentity';
 
 interface SidebarProps {
   activeModule: ActiveModule;
@@ -63,10 +65,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <div>
             <div className="font-bold text-base tracking-tight text-white flex items-center gap-1.5">
-              <span>EduMaster Math</span>
+              <span>{teacherIdentity.productName}</span>
               <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 border border-blue-400/30">v2.0</span>
             </div>
-            <div className="text-[11px] text-slate-400 font-medium">Toán THCS & THPT Việt Nam</div>
+            <div className="text-[11px] text-slate-400 font-medium">{teacherIdentity.productSubtitle}</div>
           </div>
         </div>
 
@@ -74,11 +76,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/60 mt-3 text-xs space-y-1">
           <div className="flex items-center justify-between text-slate-300">
             <span className="text-[11px] text-slate-400">Giáo viên:</span>
-            <span className="font-semibold text-white">{currentLesson.info.teacherName}</span>
+            <span className="font-semibold text-white">{teacherIdentity.fullName}</span>
           </div>
           <div className="flex items-center justify-between text-slate-300">
             <span className="text-[11px] text-slate-400">Trường:</span>
-            <span className="truncate max-w-[150px] text-slate-300" title={currentLesson.info.school}>{currentLesson.info.school}</span>
+            <span className="truncate max-w-[150px] text-slate-300" title={teacherIdentity.school}>{teacherIdentity.school}</span>
           </div>
           <div className="flex items-center justify-between text-slate-300">
             <span className="text-[11px] text-slate-400">Khối phụ trách:</span>
@@ -139,14 +141,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
-      {/* Footer Info */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/60 text-[11px] text-slate-400 flex items-center justify-between">
-        <span className="flex items-center gap-1 text-slate-400">
-          <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-          CV 5512 & CV 7991
-        </span>
-        <span className="font-mono text-[10px] text-emerald-400">● Online</span>
+      {/* Sidebar Mini Identity Footer */}
+      <div className="p-3.5 border-t border-slate-800 bg-slate-950/70 text-xs">
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-semibold text-slate-200 text-[13px]">{teacherIdentity.fullName}</span>
+          <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Online
+          </span>
+        </div>
+        <div className="text-[11px] text-slate-400 space-y-0.5 mb-2 leading-tight">
+          <p>Giáo viên {teacherIdentity.subject} · {teacherIdentity.department}</p>
+          <p>{teacherIdentity.school} · {teacherIdentity.province}</p>
+        </div>
+        <a
+          href={`mailto:${teacherIdentity.email}`}
+          className="inline-flex items-center gap-1.5 text-[11px] text-blue-400 hover:text-blue-300 hover:underline transition focus:outline-none focus:ring-1 focus:ring-blue-400 rounded"
+          aria-label={`Email giáo viên: ${teacherIdentity.email}`}
+        >
+          <Mail className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">{teacherIdentity.email}</span>
+        </a>
       </div>
     </aside>
   );
 };
+

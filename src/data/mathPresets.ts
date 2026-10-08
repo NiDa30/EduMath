@@ -6,6 +6,7 @@ import {
   MathQuestionItem, 
   SolutionScoringGuide 
 } from '../types';
+import { teacherIdentity } from './teacherIdentity';
 
 // =========================================================================
 // 1. BÀI HỌC TOÁN TRUNG TÂM: TOÁN 9 - CHƯƠNG I - BÀI 1
@@ -20,10 +21,10 @@ export const mathLesson9_1: MathLesson = {
   textbook: 'Kết nối tri thức với cuộc sống',
   periods: 2,
   info: {
-    department: 'Sở Giáo dục và Đào tạo Hà Nội',
-    school: 'Trường THCS & THPT Thực Nghiệm Khoa Học Giáo Dục',
-    subjectGroup: 'Tổ Toán - Tin học',
-    teacherName: 'Nguyễn Văn Toán',
+    department: `Sở Giáo dục và Đào tạo ${teacherIdentity.province}`,
+    school: teacherIdentity.school,
+    subjectGroup: teacherIdentity.department,
+    teacherName: teacherIdentity.fullName,
     subject: 'Toán',
     grade: 'Lớp 9',
     textbook: 'Kết nối tri thức với cuộc sống',
